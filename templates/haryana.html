@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Haryana State Covid Cases</title>
+</head>
+<body>
+	<h2 style="text-align: center;">Haryana state district wise Covid prediction</h2>
+<div>
+	<span style="color: red;">Please Note</span>
+	<p style="color: red;">
+		1. Data source - www.covid19india.org.<br>
+		2. Predictions is based on forecasting methods and accuracy is not gauranteed.
+	</p>
+</div>
+{% for i in district %}
+	<div class="plot" style="display: inline-block;">
+		<img src="/static/{{i}}.png">
+	</div>
+{% endfor %}
+</body>
+</html>
