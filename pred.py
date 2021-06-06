@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import tkinter
 import sys
 import matplotlib
+from matplotlib import dates
 matplotlib.use('TkAgg')
 
 
@@ -24,19 +25,13 @@ districts = []
 for i in total_cases_har.District.unique():
 	districts.append(i)
 
-#print(districts)
-### splitting data set to train and test
-####in future scope
-##########
-#startdate = datetime.datetime.strptime('2021-01-01', "%Y-%m-%d").date()
-
-#### looping to get all districts data
 print(districts)
 
 unwanted_num = {'Italians','Unknown', 'Foreign Evacuees'}
 
 districts = [ele for ele in districts if ele not in unwanted_num]
 print(districts)
+dict_info = {}
 for j in districts:
 	total_cases_har_amb = total_cases_har[total_cases_har['District'] == j]
 	total_cases_har_amb = total_cases_har_amb.iloc[200:]
@@ -52,7 +47,17 @@ for j in districts:
 	del new["Other"]
 	del new['Tested']
 
+	values = []
+	values.append(new.iloc[[-1]].index.values[0]) #last date avaiable
+	values.append(new["Confirmed"].iloc[[-1]].values[0])
+	values.append(new["Recovered"].iloc[[-1]].values[0])
+	values.append(new["Deceased"].iloc[[-1]].values[0])
+	
+	dict_info[str(j)] = values
+
+
 	new = new.pct_change()
+	####info dictionary
 
 	i = 0
 	while i <= 13:
@@ -72,12 +77,14 @@ for j in districts:
 	plt.plot( "Recovered",data = globals()[f"dist_{j}"].iloc[-14:], color='green', linewidth=1.3, linestyle = 'dotted', label= "Predicted Recovered")
 	plt.plot( "Deceased",data = globals()[f"dist_{j}"].iloc[:-14], color='blue', linewidth=1.3, label = "Deceased")
 	plt.plot( "Deceased",data = globals()[f"dist_{j}"].iloc[-14:], color='blue', linewidth=1.3, linestyle = 'dotted', label = "Predicted Deceased")
+	#plt.xticks(rotation=45)
 	plt.legend(loc="upper left")
 	plt.savefig("static/"+str(j)+".png")
 	plt.clf()
 
 
 
-
+data_df = pd.DataFrame.from_dict(dict_info, orient='index')
+data_df.to_excel('data_info.xlsx')
 
 
